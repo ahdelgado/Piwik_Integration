@@ -1,7 +1,7 @@
 require "piwik_integration/version"
-require “json”
-require “open-uri”
-require “net/http”
+#require “json”
+#require “open-uri”
+#require “net/http”
 
 
 
