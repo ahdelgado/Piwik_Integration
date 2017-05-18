@@ -1,3 +1,3 @@
-module PiwikIntegration
+class PiwikIntegration
   VERSION = "0.1.0"
 end
