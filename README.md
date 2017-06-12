@@ -37,7 +37,7 @@ The @analytics_url is returned by the login_to_piwik gem method. Example:
                        CONFIG[:form_metrics][:metrics_post_url],
                        CONFIG[:form_metrics][:metrics_js_url],
                        CONFIG[:form_metrics][:metrics_timeout],
-                       @npo.id)
+                       @customer.id)
 @piwik_service.set_param(:ua, @user_agent)
 @analytics_url = @piwik_service.login_to_piwik
 ```
