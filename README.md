@@ -1,6 +1,6 @@
 ## Piwik Integration
 
-Piwik Analytics is an open-source analytics platform which provides 100% user data ownership. It provides a powerful, customizable, and extensible analytics solution with visual tools to help clients make business descions from real-time data metrics. [Piwik Analytics](https://piwik.org/)
+Piwik Analytics is an open-source analytics platform which provides 100% user data ownership. It provides a powerful, customizable, and extensible analytics solution with visual tools to help clients make business decisions from real-time data metrics. [Piwik Analytics](https://piwik.org/)
 
 Piwik Integration gem allows users to more easily:
 1. Create user accounts with auto-generated usernames and passwords. 
