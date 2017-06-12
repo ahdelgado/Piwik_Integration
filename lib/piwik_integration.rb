@@ -2,16 +2,10 @@ require "piwik_integration/version"
 
 class PiwikIntegration
 
-  # REQUIRED_KEYS_POST_BASE   = [:rec, :apiv, :action_name, :send_image, :website_name, :keyword]
-  # REQUIRED_KEYS_DONATION    = [:idgoal, :ec_id, :revenue]
-  # REQUIRED_KEYS_ADMIN_BASE  = [:module]
-  # REQUIRED_KEYS_ADMIN       = [:method]
-  # REQUIRED_KEYS_LOGIN       = [:action, :login, :password]
-  # @required_keys            = []
 
   def initialize(token_auth, admin_url, post_url, js_url, timeout, customer_id=0)
     @customer_id                    = customer_id.to_i
-    raise 'PiwikService: must pass non-zero numeric customer id to new method'  unless is_customer_id_valid?
+    raise 'PiwikIntegration: must pass non-zero numeric customer id to new method'  unless is_customer_id_valid?
     @metrics_admin_url              = admin_url
     @metrics_post_url               = post_url
     @js_url                         = js_url
@@ -114,7 +108,6 @@ class PiwikIntegration
     http.use_ssl = true
     set_param(:format,  'xml')
     begin
-      # puts 'Form Metrics Admin Post: '+ url_string
       response = http.request(request)
       puts "Response: #{response.code} #{response.message} #{response.class.name}"
       result = response.body.tr('[{}]', '')
@@ -267,7 +260,7 @@ class PiwikIntegration
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
     request = Net::HTTP::Get.new(uri.request_uri)
     http.read_timeout = get_param(:timeout)
-    #todo Let's use JSON calls where available vs xml
+    #todo use JSON calls where available vs xml
     if get_param(:action_name)=='ADMIN'
       xstring = Nokogiri::XML(open(url_string))
     else
@@ -293,49 +286,19 @@ class PiwikIntegration
     @customer_id > 0
   end
 
-  # def is_valid?
-  #   case @metrics_params[:action_name]
-  #     when 'FORM_DISPLAY'
-  #       @required_keys = REQUIRED_KEYS_POST_BASE
-  #     when 'DONATION_RECEIVED'
-  #       @required_keys = REQUIRED_KEYS_POST_BASE + REQUIRED_KEYS_DONATION
-  #     when 'ADMIN'
-  #       @required_keys = REQUIRED_KEYS_ADMIN_BASE + REQUIRED_KEYS_ADMIN
-  #     when 'LOGIN'
-  #       @required_keys = REQUIRED_KEYS_ADMIN_BASE + REQUIRED_KEYS_LOGIN
-  #   end
-  #   isvalid = true
-  #   @required_keys.each do |v|
-  #     if (not @metrics_params.has_key?(v)) || (@metrics_params[v].nil?) || (@metrics_params[v].empty?)
-  #       puts missing_params
-  #       isvalid = false
-  #       break
-  #     end
-  #   end
-  #   isvalid
-  # end
-
   def metrics_admin_call(url_string)
     xstring = api_call(url_string)
     result = xstring.xpath('/result/success/@message')
     result.to_s == 'ok'
   end
 
-  # def missing_params
-  #   missing = []
-  #   @required_keys.each do |v|
-  #     missing.push(v) if (not @metrics_params.has_key?(v)) || (@metrics_params[v].nil?) || (@metrics_params[v].empty?)
-  #   end
-  #   missing
-  # end
-
   def post_metrics
-    if get_param(:action_name) == MobileFormTrackingService::DONATION_RECEIVED_TYPE
+    if get_param(:action_name) == "DONATION_RECEIVED"
       url_string = @metrics_post_url + @metrics_params.slice(:_id, :action_name, :apiv, :ec_id, :ecommerce, :idgoal,
                                                              :idsite, :patternType, :rec, :revenue, :send_image,
                                                              :timezone, :url, :uid, :ua).to_query
 
-    elsif get_param(:action_name) == MobileFormTrackingService::FORM_DISPLAY_ANALYTICS_TYPE
+    elsif get_param(:action_name) == "FORM_DISPLAY"
       action = get_param(:action_name).to_s + "  " + "#{get_param(:website_name)}/#{get_param(:keyword).gsub(/-/, '_')}"
       set_param(:action_name, action)
       url_string = @metrics_post_url + @metrics_params.slice(:_id, :action_name, :apiv, :idsite, :patternType, :rec,
